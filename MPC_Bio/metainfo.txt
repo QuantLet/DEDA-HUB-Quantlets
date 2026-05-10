@@ -1,0 +1,26 @@
+Name of Quantlet: Multi-Party Computations for Machine Learning over Genomic Data
+
+Description: "Implementation notebook for privacy-preserving genomic machine learning using Multi-Party Computation (MPC). The project builds a 3-party additive secret-sharing simulator from scratch and implements three classical genomic-ML primitives — allele frequency estimation, GWAS univariate regression, and Polygenic Risk Score (PRS) — in both vanilla NumPy and MPC variants. Uses 1000 Genomes chromosome 22 data (with synthetic fallback). Benchmarks MPC overhead in runtime, communication bytes, and round complexity vs. vanilla NumPy across a sweep of sample sizes and SNP counts, and visualizes the results."
+
+Keywords: multi-party computation, MPC, genomic data, GWAS, polygenic risk score, secret sharing, Beaver triples, privacy-preserving machine learning, allele frequency, SNP, 1000 Genomes, bioinformatics, cryptography, secure computation, communication complexity, performance benchmarking, visualization
+
+Author: Wolfgang Karl Härdle, Pavel Shibaev
+Submitted_By: Pavel Shibaev
+Submitted_To: DEDA-Seminar_Courselet
+
+Institution: Humboldt University of Berlin
+Email: "shibaev.media@gmail.com"
+
+Created_On: 2026-05-10
+Code_Files: Notebook_v2_0.ipynb
+
+Data_Files: 1000 Genomes chromosome 22 (fetched at runtime via EBI FTP; synthetic fallback generated in-notebook)
+
+Output_Files: inline notebook outputs (runtime and communication cost plots, MPC vs vanilla comparison charts)
+
+Libraries: numpy, pandas, matplotlib, scipy
+Programming_Language: Python
+Quantlet_Class: Application Quantlet
+Quantlet_Type: Analysis, Visualization, Privacy-Preserving Computation
+
+Version: 2.0
