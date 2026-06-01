@@ -1,0 +1,33 @@
+Name of Quantlet: Predicting the Next Job Title from Job Advertisement Requirements
+
+Description: "This Quantlet builds a text-classification pipeline to predict standardized O*NET occupation categories from job advertisement requirements text. The notebook loads real-world job advertisements from the OSF project pfhx3, joins the advertisements with O*NET job-title metadata, performs exploratory data analysis, transforms requirements_text into TF-IDF features, and compares a majority baseline, logistic regression, random forest, and multi-layer perceptron neural network. Model performance is evaluated using accuracy, weighted precision, weighted recall, macro F1, weighted F1, a confusion matrix, and class-level classification reports. The notebook also interprets predictive text features through logistic-regression coefficients and random-forest feature importances."
+
+Keywords: natural language processing, text classification, job advertisements, job postings, O*NET, occupation prediction, requirements text, TF-IDF, machine learning, logistic regression, random forest, neural network, multilayer perceptron, MLP, macro F1, scikit-learn, exploratory data analysis, feature importance
+
+Author: Wolfgang Karl Härdle, Laura Kaibysheva
+
+Submitted_By: Laura Kaibysheva
+
+Submitted_To: DEDA-Seminar_Courselet
+
+Institution: Humboldt University of Berlin
+
+Email: laura.kaibysheva@student.hu-berlin.de
+
+Created_On: 2026-06-01
+
+Code_Files: 20260601 Predicting the next job title.ipynb
+
+Data_Files: job_ads.xlsx (fetched at runtime from OSF project pfhx3; fallback manual upload supported)
+
+Output_Files: inline notebook outputs, model comparison table, performance bar plot, confusion matrix, classification report, top TF-IDF predictors, random-forest feature-importance plot
+
+Libraries: numpy, pandas, matplotlib, seaborn, scikit-learn, requests, openpyxl
+
+Programming_Language: Python
+
+Quantlet_Class: Application Quantlet
+
+Quantlet_Type: Text Classification, Natural Language Processing, Machine Learning, Visualization
+
+Version: 1.0
