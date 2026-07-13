@@ -1,0 +1,39 @@
+Name of Quantlet: End to End Bank Fraud Detection Web App
+
+Description: 'An end-to-end machine learning pipeline developed to detect fraudulent financial transactions. The project analyzes a dataset of 6.3 million transactions, addressing high class imbalance (0.13% fraud rate) by employing optimized sampling and threshold tuning (0.91 confidence threshold). It utilizes an XGBoost model optimized for the Precision-Recall trade-off to provide high-quality, actionable fraud alerts for investigative teams, moving beyond simple accuracy metrics.'
+
+Keywords: Keywords: 'fraud detection, machine learning, XGBoost, precision-recall, imbalance, finance, pipeline, streamlit, classification, bank, anomaly detection'
+
+Author: Wolfgang Karl Härdle, Gurpreet Singh
+
+Submitted_By: Gurpeet Singh
+
+Submitted_To: DEDA-HUB-Quantlets
+
+Institution: Humboldt University of Berlin
+
+Email: gurpreet.singh@student.hu-berlin.de
+
+Created_On: 2026-06-29
+
+Data_Files:https://www.kaggle.com/datasets/amanalisiddiqui/fraud-detection-dataset
+
+Code_Files: 20260601 Predicting the next job title.ipynb
+
+Output_Files: fraud_detection_pipeline.pickle
+
+StreamLit_App_Files: fraud_detection.py
+
+Libraries: Numpy, Pandas, Matplotlib, Seaborn, Warnings, Joblib, Scikit-Learn Pipeline, StandardScaler, OneHotEncoder, Logistic Regression, Random Forest, XGBoost (Winning Model)
+
+Programming_Language: Python
+
+Quantlet_Class: Application Quantlet
+
+Quantlet_Type: Exploratory Data Analysis, Machine Learning, Visualization, Streamlit Web App
+
+Deployment_Format: Streamlit Web Application for real-time inference
+
+Example: fraud_detection.py - Streamlit application allowing users to input transaction details (type, amount, balances) and receive real-time fraud probability predictions based on the deployed XGBoost pipeline.
+
+Version: 1.0
