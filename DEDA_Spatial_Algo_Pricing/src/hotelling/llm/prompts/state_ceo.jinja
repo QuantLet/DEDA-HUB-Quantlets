@@ -1,0 +1,125 @@
+## Current market state — Epoch {{ epoch }}
+
+This is one epoch of a repeated game. The numbers below summarise the most recent measurement window; your decision will play out over this epoch and shape how rivals behave in all the epochs that follow.
+
+---
+
+### 1. Your chain performance (recent window)
+
+| Metric | Value |
+|--------|-------|
+| Number of stores | {{ own.n_stores }} |
+| Mean price | {{ "%.3f"|format(own.mean_price_last_T) }} € |
+{% if with_effort %}
+| Mean effort | {{ "%.3f"|format(own.mean_effort_last_T) }} |
+{% endif %}
+| Margin per unit (price − marginal cost) | {{ "%.3f"|format(own.margin_per_unit) }} € |
+| Profit per store per period | {{ "{:,.0f}".format(own.profit_per_store_per_period) }} € |
+| Total demand (window) | {{ "{:,.0f}".format(own.total_demand_last_T) }} units |
+| Profit trend vs. previous epoch | {{ "%+.1f"|format(own.profit_trend_pct) }}% |
+
+*A near-zero profit trend is ambiguous — it means either you are at the profit peak OR stuck on a low plateau below it. Use the headroom / counterfactual below (when shown), not the flat trend, to tell which.*
+
+{% if own.headroom is defined %}
+#### Where you sit vs. the sustainable ceiling (your type: {{ own.headroom.chain_type }})
+
+| Reference | Price |
+|-----------|-------|
+| Competitive floor (one-shot Bertrand-Nash) | {{ "%.3f"|format(own.headroom.nash_price) }} € |
+| Your current mean price | {{ "%.3f"|format(own.headroom.current_price) }} € |
+| Joint-profit-maximising ceiling (your-type cartel) | {{ "%.3f"|format(own.headroom.mono_price) }} € |
+
+You are capturing **{{ "%.0f"|format(own.headroom.surplus_captured_pct) }}%** of the surplus between the competitive floor and the sustainable ceiling. There is **{{ "%.2f"|format(own.headroom.room_to_mono_eur) }} €** ({{ "%.1f"|format(own.headroom.room_to_mono_steps) }} grid steps) of room above your current price before you reach the joint-profit-maximising level. Sticky, differentiated demand makes prices in this range self-sustaining **if your type holds them together**.
+{% endif %}
+
+{% if own.tier_counterfactual is defined %}
+#### What a coordinated step up would do to your gross profit
+
+Estimated change in YOUR chain's gross profit relative to holding the current tier:
+
+| Move | Your gross-profit change |
+|------|--------------------------|
+| Your whole type raises **one** grid step together | {{ "%+.1f"|format(own.tier_counterfactual.up1_reciprocal_pct) }}% |
+| Your whole type raises **two** grid steps together | {{ "%+.1f"|format(own.tier_counterfactual.up2_reciprocal_pct) }}% |
+| You raise one step **alone** (rivals hold) | {{ "%+.1f"|format(own.tier_counterfactual.up1_unilateral_pct) }}% |
+
+*Read the contrast: raising alone typically gains little or loses (rivals keep the low-price shoppers) — which is exactly why the tier never rises on its own. Raising together is what converts headroom into profit. This is the case for coordination, and for setting a band whose floor sits one step above the current level.*
+{% endif %}
+
+{% if active_divisions %}
+#### Performance by store group
+
+| Group | Mean price |{% if with_effort %} Mean effort |{% endif %} Demand share | Profit share |
+|-------|-----------|{% if with_effort %}-------------|{% endif %}-------------|-------------|
+{% for g in own.group_performance %}
+| {{ g.group_key }} | {{ "%.3f"|format(g.mean_price) }} € |{% if with_effort %} {{ "%.3f"|format(g.mean_effort) }} |{% endif %} {{ "%.1f"|format(g.demand_share_pct) }}% | {{ "%.1f"|format(g.profit_share_pct) }}% |
+{% endfor %}
+{% endif %}
+
+{% if own.group_performance and (own.group_performance[0].position_label is defined) %}
+#### Competitive brief by group (analytics)
+
+| Group | Margin (p̄−mc) | Demand index | Local competition | Same-type price gap | Position | Price trend |
+|-------|----------------|--------------|-------------------|---------------------|----------|-------------|
+{% for g in own.group_performance %}
+| {{ g.group_key }} | {{ "%.2f"|format(g.margin_eur) }} € | {{ "%.2f"|format(g.demand_index) }} | {{ "%.1f"|format(g.mean_local_competition) }} rivals | {{ "%+.2f"|format(g.price_gap_vs_same_tier) }} € | {{ g.position_label }} | {{ "%+.1f"|format(g.price_trend_pct) }}% |
+{% endfor %}
+
+*Demand index > 1 = the group captures more demand than its store-count share. Same-type price gap = your group's mean price minus the mean price of the OTHER chains of your type (positive = you sit above your type, negative = you sit below it). A persistently negative gap means you are leading the type downward in price — profitable for an epoch, costly if it triggers matching.*
+{% endif %}
+
+---
+
+### 2. Your previous envelope decisions{% if with_comm %} and signals{% endif %}
+
+{% if history %}
+| Epoch | p_bar | dp- | dp+ |{% if with_effort %} e_bar | delta_e |{% endif %} epsilon |{% if with_comm %} signalled willing | proposed price |{% endif %} Realised profit |
+|-------|-------|-----|-----|{% if with_effort %}-------|---------|{% endif %}---------|{% if with_comm %}-------------------|----------------|{% endif %}----------------|
+{% for h in history %}
+{% set env = h.envelopes.default if h.envelopes.default is defined else (h.envelopes.values()|list)[0] %}
+| {{ h.epoch }} | {{ "%.3f"|format(env.p_bar) }} | {{ "%.3f"|format(env.dp_minus if env.dp_minus is defined else env.delta_p) }} | {{ "%.3f"|format(env.dp_plus if env.dp_plus is defined else env.delta_p) }} |{% if with_effort %} {{ "%.3f"|format(env.e_bar) }} | {{ "%.3f"|format(env.delta_e) }} |{% endif %} {{ "%.3f"|format(env.epsilon) }} |{% if with_comm %} {{ h.signal.willing if h.signal is defined and h.signal else "—" }} | {{ ("%.2f"|format(h.signal.proposed_tier_price)) if h.signal is defined and h.signal else "—" }} |{% endif %} {{ "%.2f"|format(h.profit_realized) }} € |
+{% endfor %}
+{% else %}
+No previous epochs recorded (this is the first CEO call).
+{% endif %}
+
+---
+
+### 3. Rival chains (public information)
+
+| Chain | Type | Stores | Last mean price | Price trend |{% if with_comm %} Last signal | Proposed price |{% endif %}
+|-------|------|--------|----------------|-------------|{% if with_comm %}------------|----------------|{% endif %}
+{% for r in rivals %}
+| {{ r.id }} | {{ r.type }} | {{ r.n_stores }} | {{ "%.3f"|format(r.last_published_price) }} € | {{ "%+.1f"|format(r.price_trend_pct) }}% |{% if with_comm %} {{ ("willing" if r.last_signal.willing else "competing") if r.last_signal else "—" }} | {{ ("%.2f"|format(r.last_signal.proposed_tier_price)) if r.last_signal else "—" }} |{% endif %}
+{% endfor %}
+
+*Only rivals' published prices{% if with_comm %} and coordination signals{% endif %} are observable. Their profits{% if with_effort %}, effort levels,{% endif %} and internal strategies are not visible to you.*
+
+{% if with_comm %}
+**Your own previous signal:** {% if own_last_signal %}you signalled **{{ "willing to coordinate" if own_last_signal.willing else "competing" }}** at a proposed price of {{ "%.2f"|format(own_last_signal.proposed_tier_price) }} €.{% else %}none yet (first epoch).{% endif %}
+{% endif %}
+
+---
+
+### 4. Consumer market (aggregated zone summary)
+
+Total market population: {{ "{:,.0f}".format(consumers.total_population) }}
+High-status consumer share (ring-wide): {{ "%.1f"|format(consumers.high_status_share_pct) }}%
+
+| Zone | Population | High-status share | Dominant chain type |
+|------|-----------|-------------------|-------------------|
+{% for z in consumers.zones %}
+| {{ z.label }} | {{ "{:,.0f}".format(z.population) }} | {{ "%.0f"|format(z.high_status_pct) }}% | {{ z.dominant_rival_type }} |
+{% endfor %}
+
+---
+
+### 5. Constraints reminder
+
+- Marginal cost: **{{ marginal_cost }} €** — all `p_bar`{% if with_comm %} and `proposed_tier_price`{% endif %} values must strictly exceed this.
+- Price band: **dp_minus > 0 and dp_plus > 0**, band must hold ≥ 2 grid points (one grid step ≈ {{ grid.step }} €){% if with_effort %}; **delta_e ≥ {{ min_delta_e }}**{% endif %}.
+- Exploration rate: **epsilon ∈ (0.0, 0.25)** per group (it replaces the training schedule; keep it low, ~0.02–0.10).
+
+---
+
+First write your reasoning in the `deliberation` field — work through your headroom, the hold-vs-raise-vs-cut trade-off, and (when shown) the coordinated-vs-unilateral counterfactual — then output the rest of your JSON decision.

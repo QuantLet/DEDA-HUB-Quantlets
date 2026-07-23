@@ -1,0 +1,26 @@
+# Core runtime dependencies.
+# The authoritative dependency spec (including all optional extras) lives in
+# pyproject.toml. Prefer installing the package over this file:
+#
+#   pip install -e .            # core
+#   pip install -e ".[all]"     # everything (spatial, viz, rl, llm, db, cli, notebooks)
+#
+# This file lists only the core runtime pins for a minimal install.
+
+numpy>=1.26
+numba>=0.59
+pandas>=2.1
+scipy>=1.11
+pydantic>=2.7
+jinja2>=3.1
+pyyaml>=6.0
+
+# Optional extras (install via pyproject, not here):
+#   [spatial]   geopandas, rasterio, shapely, pyproj, osmnx, requests, pyarrow, py7zr, pdfplumber, openpyxl
+#   [transit]   r5py
+#   [viz]       matplotlib, plotly, folium, pydeck, imageio, contextily, xyzservices
+#   [rl]        torch, gymnasium, pettingzoo
+#   [db]        duckdb, pyarrow
+#   [llm]       litellm, instructor, openai
+#   [cli]       typer
+#   [notebooks] jupyter, ipywidgets, tqdm, marimo
